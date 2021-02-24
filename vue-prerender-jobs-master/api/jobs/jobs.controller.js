@@ -1,0 +1,63 @@
+const jobsService = require('./jobs.service')
+const logger = require('../../services/logger.service')
+
+module.exports = { addJob, getJobs, getJob, removeJob, updateJob }
+
+
+// Read
+
+async function getJobs(req, res) {
+    try {
+        const jobsRes = await jobsService.query(req.query)
+        res.status(200).send(jobsRes)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+async function getJob(req, res) {
+    try {
+        const {jobs,total} = await jobsService.query({ _id: req.params.id })
+        res.status(200).send(jobs[0])
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+// Create
+
+async function addJob(req, res) {
+    try {
+        const job = await jobsService.add(req.body)
+        res.send(job)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+// Update
+
+async function updateJob(req, res) {
+    try {
+        const job = await jobsService.update(req.body)
+        res.send(job)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+// Remove
+
+async function removeJob(req, res) {
+    try {
+        const job = await jobsService.remove(req.params.id)
+        res.send(job)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
