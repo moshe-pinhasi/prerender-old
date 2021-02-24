@@ -19,7 +19,7 @@ for (let i=0; i< 100; i++) {
   const location = locations[random(locations.length)]
   const job_type = job_types[random(job_types.length)]
   const company = companies[random(companies.length)]
-  jobs.push({title, locations, job_type, company})
+  jobs.push({title, location, job_type, company})
 }
 
 try {
