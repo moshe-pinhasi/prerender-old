@@ -15,11 +15,12 @@ const random = (max) => Math.floor(Math.random() * max)
 
 const jobs = []
 for (let i=0; i< 100; i++) {
+  const id = i + ""
   const title = job_titles[random(job_titles.length)]
   const location = locations[random(locations.length)]
   const job_type = job_types[random(job_types.length)]
   const company = companies[random(companies.length)]
-  jobs.push({title, location, job_type, company})
+  jobs.push({id, title, location, job_type, company})
 }
 
 try {

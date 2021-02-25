@@ -1,5 +1,5 @@
 <template>
-  <router-link v-bind:to="jobLink">
+  <router-link :to="jobLink">
     <div class="job-preview">
       <div><h2>{{ job.title }}</h2></div>
       <div><label>Location: </label>{{ job.location }}</div>
@@ -14,7 +14,7 @@ export default {
   props: ["job"],
   computed: {
     jobLink() {
-      return `/job/${this.job._id}`;
+      return `/job/${this.job.id}`;
     },
   },
 };

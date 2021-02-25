@@ -1,6 +1,6 @@
 const jobs = require('../../db/jobs.json')
 
-module.exports = { add, query, remove, update }
+module.exports = { add, query, remove, update, getById }
 
 
 // Create
@@ -24,6 +24,12 @@ async function query(filterBy = {}) {
             total: currJobs.length
         }) 
     })
+}
+
+// getById
+async function getById(id) {
+    // ADD YOUR LOGIC HERE
+    return jobs.filter(item => item.id === id)[0]
 }
 
 // Update

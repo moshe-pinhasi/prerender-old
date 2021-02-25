@@ -1,9 +1,9 @@
 <template>
   <div class="job-details-container" v-if="job">
-    <div>Job title: {{ job.title }}</div>
-    <div>Job Description: {{ job.desc }}</div>
-    <div>Company: {{ job.company }}</div>
-    <div>Type: {{ job.jobType }}</div>
+    <div><label>Job title: </label><h2>{{ job.title }}</h2></div>
+    <div><label>Location: </label>{{ job.location }}</div>
+    <div><label>Company: </label>{{ job.company }}</div>
+    <div><label>Type: </label>{{ job.job_type }}</div>
   </div>
 </template>
 
@@ -27,7 +27,8 @@ export default {
   },
   methods: {
     async getJob() {
-      this.job = await jobService.getJob(this.$route.params.id);
+      const res = await jobService.getJob(this.$route.params.id);
+      this.job = res.job
     },
   },
 };
