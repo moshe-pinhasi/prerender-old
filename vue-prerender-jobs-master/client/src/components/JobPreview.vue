@@ -1,10 +1,10 @@
 <template>
   <router-link v-bind:to="jobLink">
     <div class="job-preview">
-      <div>{{ job.title }}</div>
-      <div>{{ job.city }}</div>
-      <div>{{ job.company }}</div>
-      <div>{{ job.jobType }}</div>
+      <div><h2>{{ job.title }}</h2></div>
+      <div><label>Location: </label>{{ job.location }}</div>
+      <div><label>Company: </label>{{ job.company }}</div>
+      <div><label>Type: </label>{{ job.job_type }}</div>
     </div>
   </router-link>
 </template>
@@ -21,4 +21,12 @@ export default {
 </script>
 
 <style>
+.job-preview {
+  border: 1px solid;
+  padding: 10px 5px;
+}
+.job-preview label {
+  font-weight: 600;
+}
+
 </style>

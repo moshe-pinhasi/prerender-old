@@ -3,7 +3,7 @@
     <div class="page-buttons">
       <button v-if="page > 1" @click="routeToNewPage(page - 1)">-</button>
     </div>
-    <div class="page-number">{{ page }}</div>
+    <div class="page-number">{{ page }} of {{totalPages}}</div>
     <div class="page-buttons" v-if="totalPages > page">
       <button @click="routeToNewPage(page + 1)">+</button>
     </div>

@@ -13,16 +13,18 @@ const filterJobs = () => {
     return JSON.parse(JSON.stringify(jobs))
 }
 
-
 // Read
 async function query(filterBy = {}) {
     return new Promise((resolve) => {
-        const { page, count } = filterBy
+        const { page } = filterBy
         const currJobs = filterJobs()
-        resolve({jobs: currJobs.slice(page,10), total: currJobs.length}) 
+        const index = page * 10
+        resolve({
+            jobs: currJobs.slice(index, index + 10), 
+            total: currJobs.length
+        }) 
     })
 }
-
 
 // Update
 async function update(item) {
