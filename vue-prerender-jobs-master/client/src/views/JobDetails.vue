@@ -27,8 +27,8 @@ export default {
   },
   methods: {
     async getJob() {
-      const res = await jobService.getJob(this.$route.params.id);
-      this.job = res.job
+      const job = await jobService.getJob(this.$route.params.id);
+      this.job = job
     },
   },
 };

@@ -1,6 +1,5 @@
 
-    module.exports = {
-  "dbURL": "mongodb+srv://yaronl219:zgArkG7R6ubgAhjs@cluster0.wb3ia.mongodb.net/?retryWrites=true&w=majority",
+module.exports = {
+  "dbURL": "mongodb://localhost:27017",
   "dbName": "prerender-jobs"
 }
-    

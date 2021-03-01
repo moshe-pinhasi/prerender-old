@@ -19,7 +19,7 @@ async function getJobs(req, res) {
 async function getJob(req, res) {
     try {
         const job = await jobsService.getById(req.params.id)
-        res.status(200).send({job})
+        res.status(200).send(job)
     } catch (err) {
         console.log(err)
         res.status(500).send('server error')
