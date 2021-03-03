@@ -1,7 +1,8 @@
 const jobsService = require('./jobs.service')
 const logger = require('../../services/logger.service')
 
-module.exports = { addJob, getJobs, getJob, removeJob, updateJob }
+
+module.exports = { addJob, getJobs, getJob, removeJob, updateJob, getHeadOptions, generateStaticSite }
 
 
 // Read
@@ -10,6 +11,23 @@ async function getJobs(req, res) {
     try {
         const jobsRes = await jobsService.query(req.query)
         res.status(200).send(jobsRes)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+async function generateStaticSite(req, res) {
+    try {
+        const { jobs } = await jobsService.query()
+        
+        // for each job - generate an HTML file, use EJS, save to dist - currently sync
+        jobs.forEach(jobsService.generateJobPage);
+
+        // Generate HTML list file
+        jobsService.generateJobList(jobs)
+
+        res.status(200).end()
     } catch (err) {
         console.log(err)
         res.status(500).send('server error')
@@ -56,6 +74,17 @@ async function removeJob(req, res) {
     try {
         const job = await jobsService.remove(req.params.id)
         res.send(job)
+    } catch (err) {
+        console.log(err)
+        res.status(500).send('server error')
+    }
+}
+
+
+function getHeadOptions(req, res) {
+    try {
+        const headOptions = jobsService.getHeadOptions()
+        res.send(headOptions)
     } catch (err) {
         console.log(err)
         res.status(500).send('server error')

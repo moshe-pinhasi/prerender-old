@@ -4,7 +4,9 @@ export const jobService = {
     getJobs,
     getJob,
     saveJob,
-    getEmptyJob
+    getEmptyJob,
+    getHeadOptions,
+    generateStaticSite
 }
 
 async function getJobs(page, filterBy) {
@@ -27,13 +29,25 @@ async function saveJob(job) {
     return savedJob
 }
 
+async function getHeadOptions() {
+    const headOptions = await httpService.get(`jobs/head`)
+    return headOptions
+}
+
 function getEmptyJob() {
     return {
         title: '',
         location: '',
         job_type: '',
+        ctgs: [],
+        keywords: [],
+        imgUrl: '',
         company: ''
     }
+}
+
+function generateStaticSite(){
+    return httpService.get('jobs/admin/generate-site')
 }
 
 function _parseFilterToQueryParams(page, filter) {

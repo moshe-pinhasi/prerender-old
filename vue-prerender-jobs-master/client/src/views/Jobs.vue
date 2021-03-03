@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Jobs</h1>
+    <button @click="generate">Generate static</button>
     <div>
       <router-link class="add-link" to="/job/edit">Add new</router-link>
       <span class="list-title">Jobs list</span>
@@ -27,10 +28,12 @@ export default {
       filterBy: null,
       page: 1,
       totalPages: 0,
+      headOptions: null,
     };
   },
   created() {
     this.getJobs();
+    this.getHeadOptions();
   },
   methods: {
     async getJobs() {
@@ -46,50 +49,16 @@ export default {
       this.page = pageNum;
       this.getJobs();
     },
-  },
-  head: {
-    title: {
-      inner: 'It will be a pleasure',
+    async getHeadOptions() {
+      this.headOptions = await jobService.getHeadOptions();
+      this.$emit('updateHead');
     },
-    // Meta tags
-    meta: [
-      { name: 'application-name', content: 'Name of my application' },
-      { name: 'description', content: 'A description of the page', id: 'desc' }, // id to replace intead of create element
-      // ...
-      // Twitter
-      { name: 'twitter:title', content: 'Content Title' },
-      // with shorthand
-      { n: 'twitter:description', c: 'Content description less than 200 characters' },
-      // ...
-      // Google+ / Schema.org
-      { itemprop: 'name', content: 'Content Title' },
-      { itemprop: 'description', content: 'Content Title' },
-      // ...
-      // Facebook / Open Graph
-      { property: 'fb:app_id', content: '123456789' },
-      { property: 'og:title', content: 'Content Title' },
-      // with shorthand
-      { p: 'og:image', c: 'https://example.com/image.jpg' },
-      // ...
-    ],
-    // link tags
-    link: [
-      { rel: 'canonical', href: 'http://example.com/#!/contact/', id: 'canonical' },
-      { rel: 'author', href: 'author', undo: false }, // undo property - not to remove the element
-      // with shorthand
-      // { r: 'icon', h: 'path/to/icon-32.png', sz: '32x32', t: 'image/png' },
-      // ...
-    ],
-    script: [
-      { type: 'text/javascript', src: 'https://cdn.rawgit.com/ktquez/vue-head/master/vue-head.js', async: true, body: true }, // Insert in body
-      // with shorthand
-      { t: 'application/ld+json', i: '{ "@context": "http://schema.org" }' },
-      // ...
-    ],
-    style: [
-      // { type: 'text/css', inner: 'body { background-color: #000; color: #fff}', undo: false },
-      // ...
-    ],
+    async generate() {
+      jobService.generateStaticSite();
+    },
+  },
+  head() {
+    return this.headOptions;
   },
 };
 </script>

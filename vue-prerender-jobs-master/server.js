@@ -14,17 +14,17 @@ const cache = {}
 // const prerender = require('prerender');
 // const server = prerender();
 const prerenderNode = require('prerender-node')
-    .set('prerenderServiceUrl','http://localhost:3000')
+    .set('prerenderServiceUrl', 'http://localhost:3000')
     // .set('prerenderServiceUrl','https://prerender-jobs-server-test.herokuapp.com/')
-    .set('beforeRender', function(req, done) {
+    .set('beforeRender', function (req, done) {
         // do whatever you need to do
         console.log('before-render')
         if (!cache[req.url]) return done();
-        
+
         console.log('loading from cache')
         done(req.url, done);
     })
-    .set('afterRender', function(err, req, prerender_res) {
+    .set('afterRender', function (err, req, prerender_res) {
         // do whatever you need to do
         console.log('after-render')
         cache[req.url] = prerender_res.body
@@ -32,7 +32,6 @@ const prerenderNode = require('prerender-node')
 app.use(prerenderNode);
 
 // server.start();
-
 
 app.use(cookieParser())
 app.use(bodyParser.json());
@@ -56,10 +55,23 @@ app.use('/api/jobs', jobsRoutes)
 
 
 
-app.use(express.static(path.resolve(__dirname, 'dist')));
-app.get('/**', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+
+app.get('/job/:id', (req, res) => {
+    const {id} = req.params
+    res.sendFile(path.join(__dirname, 'dist', `job-${id}.html`));
+    // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 })
+
+app.get('/job', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', `job-list.html`));
+    // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+})
+
+app.use(express.static(path.resolve(__dirname, 'vue-build')));
+// app.get('/**', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'vue-build', 'index.html'));
+//     // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// })
 
 const logger = require('./services/logger.service')
 const port = process.env.PORT || 3030;

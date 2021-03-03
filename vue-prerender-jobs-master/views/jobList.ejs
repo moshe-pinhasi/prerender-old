@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="List of jobs">
+    <meta name="twitter:title" content="Check out our jobs">
+    <meta property="og:title" content="Check out our jobs">
+    <title>Job list</title>
+    <link href="/css/chunk-48b24039.6d139aaa.css" rel="prefetch">
+    <link href="/css/chunk-56a8e4be.cfc5dc03.css" rel="prefetch">
+    <link href="/css/chunk-e8482afc.f385893d.css" rel="prefetch">
+    <link href="/js/chunk-48b24039.42b080aa.js" rel="prefetch">
+    <link href="/js/chunk-56a8e4be.67dbd32d.js" rel="prefetch">
+    <link href="/js/chunk-71d5be9e.f4341417.js" rel="prefetch">
+    <link href="/js/chunk-e8482afc.480874d7.js" rel="prefetch">
+    <link href="/css/app.4e32e7c2.css" rel="preload" as="style">
+    <link href="/js/app.12720814.js" rel="preload" as="script">
+    <link href="/js/chunk-vendors.118e16b2.js" rel="preload" as="script">
+    <link href="/css/app.4e32e7c2.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <h2>Job List</h2>
+    <ul class="job-list">
+        <% jobs.forEach(job=> { %>
+            <li>
+                <a href="<%= " /job/" + job._id %>"> <%= job.title %> </a>
+            </li>
+            <% }); %>
+    </ul>
+    <div id="app">
+    </div>
+    <script>
+        window.jobs = JSON.parse('<%- JSON.stringify(jobs)%>');
+    </script>
+    <script src="/js/chunk-vendors.118e16b2.js"></script>
+    <script src="/js/app.12720814.js"></script>
+</body>
+
+</html>

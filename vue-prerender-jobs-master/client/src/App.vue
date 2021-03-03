@@ -1,12 +1,25 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/job">Jobs</router-link>
-    </div>
-    <router-view/>
+  <div>
+      <router-link to="/">Next job</router-link>|
+      <router-link to="/">Previews job</router-link>
+    <!-- <router-view /> -->
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+    };
+  },
+  created() {
+    // console.log(document.querySelector('.job-list'));
+  },
+  mounted() {
+
+  },
+};
+</script>
 
 <style lang="scss">
 #app {

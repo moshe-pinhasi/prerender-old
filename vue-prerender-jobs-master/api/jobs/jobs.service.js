@@ -1,12 +1,15 @@
 const jobs = require('../../db/jobs.json')
 const dbService = require('../../services/db.service')
 const ObjectId = require('mongodb').ObjectId
+const ejs = require('ejs')
+var fs = require('fs');
+const path = require("path");
 
 const JOBS_COLLECTION = 'jobs'
 
 
 
-module.exports = { add, addMany, query, remove, update, getById }
+module.exports = { query, getById, remove, update, add, addMany, getHeadOptions, generateJobPage, generateJobList, }
 
 
 // Read
@@ -16,7 +19,11 @@ async function query(filterBy = {}) {
     const index = (page - 1) * 10
     try {
         const jobs = await collection.find().toArray()
-        return { jobs: jobs.slice(index, index + 10), total: jobs.length }
+        if (page) {
+            return { jobs: jobs.slice(index, index + 10), total: jobs.length }
+        } else {
+            return { jobs, total: jobs.length }
+        }
     } catch (err) {
         console.log('ERROR: cannot find jobs')
         throw err;
@@ -29,17 +36,19 @@ async function getById(id) {
     try {
         return await collection.findOne({ _id: ObjectId(id) })
     } catch (err) {
-        console.log('ERROR: cannot find order')
+        console.log('ERROR: cannot find job')
         throw err;
     }
 }
 
 //Create one
-async function add(item) {
+async function add(job) {
     const collection = await dbService.getCollection(JOBS_COLLECTION)
     try {
-        await collection.insertOne(item);
-        return item;
+        await collection.insertOne(job);
+        generateJobPage(job)
+        generateJobList()
+        return job;
     } catch (err) {
         console.log(`ERROR: cannot insert order`)
         throw err;
@@ -47,12 +56,15 @@ async function add(item) {
 }
 
 //Create many
-async function addMany(items) {
+async function addMany(jobs) {
     const collection = await dbService.getCollection(JOBS_COLLECTION)
     try {
-
-        await collection.insertMany(items);
-        return items;
+        await collection.insertMany(jobs);
+        jobs.forEach(job => {
+            generateJobPage(job)
+        });
+        generateJobList()
+        return jobs;
     } catch (err) {
         console.log(`ERROR: cannot insert order`)
         throw err;
@@ -60,16 +72,19 @@ async function addMany(items) {
 }
 
 // Update
-async function update(item) {
+async function update(job) {
     const collection = await dbService.getCollection(JOBS_COLLECTION)
-    const strId = item._id
+    const strId = job._id
     const _id = ObjectId(strId)
-    delete item._id
+    delete job._id
     try {
-        await collection.updateOne({ _id }, { $set: item })
-        return item
+        await collection.updateOne({ "_id": _id }, { $set: job })
+        job._id = _id
+        generateJobPage(job)
+        generateJobList()
+        return job
     } catch (err) {
-        console.log(`ERROR: cannot update item ${item._id}`)
+        console.log(`ERROR: cannot update job ${job._id}`)
         throw err;
     }
 }
@@ -79,9 +94,113 @@ async function remove(Id) {
     // ADD YOUR LOGIC HERE
 }
 
+async function generateJobPage(job) {
+    //make async
+    const template = ejs.compile(fs.readFileSync(path.resolve(__dirname, '../../views/jobDetails.ejs'), 'utf8'));
+    const generatedHtml = template({ job });
+    // console.log(generatedHtml);
+
+    //make async
+    const fileName = `job-${job._id}`
+    fs.writeFile(path.resolve(__dirname, `../../dist/${fileName}.html`), generatedHtml, function (err) {
+        if (err) { console.log(err); return false }
+        console.log(`generated ${fileName} successfully`);
+        return true;
+    });
+}
+
+// need to add to every add / update
+// query jobs by itself? 
+async function generateJobList() {
+    const { jobs } = await query()
+
+    //make async
+    const template = ejs.compile(fs.readFileSync(path.resolve(__dirname, '../../views/jobList.ejs'), 'utf8'));
+    const generatedHtml = template({ jobs });
+
+    //make async
+    const fileName = `job-list`
+    fs.writeFile(path.resolve(__dirname, `../../dist/${fileName}.html`), generatedHtml, function (err) {
+        if (err) { console.log(err); return false }
+        console.log(`generated ${fileName} successfully`);
+        return true;
+    });
+}
+
+function getHeadOptions(job) {
+    const headOptions = {
+        title: {
+            inner: 'It will be a pleasura',
+        },
+        // Meta tags
+        meta: [
+            { name: 'application-name', content: 'Name of my application' },
+            { name: 'description', content: 'A description of the page', id: 'desc' }, // id to replace intead of create element
+            // ...
+            // Twitter
+            { name: 'twitter:title', content: 'Content Title' },
+            // with shorthand
+            { n: 'twitter:description', c: 'Content description less than 200 characters' },
+            // ...
+            // Google+ / Schema.org
+            { itemprop: 'name', content: 'Content Title' },
+            { itemprop: 'description', content: 'Content Title' },
+            // ...
+            // Facebook / Open Graph
+            { property: 'fb:app_id', content: '123456789' },
+            { property: 'og:title', content: 'Content Title' },
+            // with shorthand
+            { p: 'og:image', c: 'https://example.com/image.jpg' },
+            // ...
+        ],
+        // link tags
+        link: [
+            { rel: 'canonical', href: 'http://example.com/#!/contact/', id: 'canonical' },
+            { rel: 'author', href: 'author', undo: false }, // undo property - not to remove the element
+            // with shorthand
+            // { r: 'icon', h: 'path/to/icon-32.png', sz: '32x32', t: 'image/png' },
+            // ...
+        ],
+        script: [
+            {
+                type: 'text/javascript',
+                src: 'https://cdn.rawgit.com/ktquez/vue-head/master/vue-head.js',
+                async: true,
+                body: true,
+            }, // Insert in body
+            // with shorthand
+            { t: 'application/ld+json', i: '{ "@context": "http://schema.org" }' },
+            // ...
+        ],
+        // style: [
+        //     { type: 'text/css', inner: 'body { background-color: #000; color: #fff}', undo: false },
+        //     // ...
+        // ],
+    };
+    return headOptions
+}
+
+
+// _insertInitialItems(jobs)
 async function _insertInitialItems(items) {
+    const keywords = ['hybrid', 'dog-friendly', 'transportation', 'long-term', 'short-term']
+    const ctgs = [
+        { _id: 'c101', name: 'Dev' },
+        { _id: 'c102', name: 'QA' },
+        { _id: 'c103', name: 'Marketing' },
+        { _id: 'c104', name: 'Product' },
+        { _id: 'c105', name: 'Sales' },
+    ]
+
     const noIdItems = items.map(item => {
+        // sort randomly
+        keywords.sort(function () { return .5 - Math.random() })
+        ctgs.sort(function () { return .5 - Math.random() })
+
         if (item.id) delete item.id
+        item.keywords = keywords.slice(0, 2)
+        item.ctgs = ctgs.slice(0, 2)
+        item.imgUrl = 'https://images.creativemarket.com/0.1.0/ps/1435227/1160/772/m1/fpnw/wm0/briefcase-icon-flat-01-.jpg?1467989176&s=e696a07317ac83c3ee5a659b70e1996c'
         return item
     })
     addMany(noIdItems)

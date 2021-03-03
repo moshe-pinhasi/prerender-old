@@ -1,15 +1,17 @@
 
-    const express = require('express')
-    
-    const {addJob,getJobs, getJob,removeJob,updateJob} = require('./jobs.controller')
+const express = require('express')
 
-    const router = express.Router()
+const { addJob, getJobs, getJob, removeJob, updateJob, getHeadOptions, generateStaticSite } = require('./jobs.controller')
 
-    router.get('/', getJobs)
-    router.get('/:id', getJob)
-    router.post('/', addJob)
-    router.put('/', updateJob)
-    router.delete('/', removeJob)
-    
+const router = express.Router()
 
-    module.exports = router
+router.get('/', getJobs)
+router.get('/head', getHeadOptions)
+router.get('/:id', getJob)
+router.post('/', addJob)
+router.put('/', updateJob)
+router.delete('/', removeJob)
+router.get('/admin/generate-site', generateStaticSite)
+
+
+module.exports = router
