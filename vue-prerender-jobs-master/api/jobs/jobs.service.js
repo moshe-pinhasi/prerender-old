@@ -1,15 +1,11 @@
-const jobs = require('../../db/jobs.json')
+// const jobs = require('../../db/jobs.json')
 const dbService = require('../../services/db.service')
+const templatesService = require('../../services/templates.service')
 const ObjectId = require('mongodb').ObjectId
-const ejs = require('ejs')
-var fs = require('fs');
-const path = require("path");
 
 const JOBS_COLLECTION = 'jobs'
 
-
-
-module.exports = { query, getById, remove, update, add, addMany, getHeadOptions, generateJobPage, generateJobList, }
+module.exports = { query, getById, remove, update, add, addMany, getHeadOptions }
 
 
 // Read
@@ -46,8 +42,9 @@ async function add(job) {
     const collection = await dbService.getCollection(JOBS_COLLECTION)
     try {
         await collection.insertOne(job);
-        generateJobPage(job)
-        generateJobList()
+        const {jobs} = await query()
+        templatesService.generateJobPage(job, jobs)
+        templatesService.generateJobList(jobs)
         return job;
     } catch (err) {
         console.log(`ERROR: cannot insert order`)
@@ -61,9 +58,9 @@ async function addMany(jobs) {
     try {
         await collection.insertMany(jobs);
         jobs.forEach(job => {
-            generateJobPage(job)
+            templatesService.generateJobPage(job, jobs)
         });
-        generateJobList()
+        templatesService.generateJobList(jobs)
         return jobs;
     } catch (err) {
         console.log(`ERROR: cannot insert order`)
@@ -80,8 +77,9 @@ async function update(job) {
     try {
         await collection.updateOne({ "_id": _id }, { $set: job })
         job._id = _id
-        generateJobPage(job)
-        generateJobList()
+        const {jobs} = await query()
+        templatesService.generateJobPage(job, jobs)
+        templatesService.generateJobList(jobs)
         return job
     } catch (err) {
         console.log(`ERROR: cannot update job ${job._id}`)
@@ -92,40 +90,6 @@ async function update(job) {
 // Delete
 async function remove(Id) {
     // ADD YOUR LOGIC HERE
-}
-
-async function generateJobPage(job) {
-    //make async
-    const { jobs } = await query()
-    const template = ejs.compile(fs.readFileSync(path.resolve(__dirname, '../../views/jobDetails.ejs'), 'utf8'));
-    const generatedHtml = template({ job, jobs });
-    // console.log(generatedHtml);
-
-    //make async
-    const fileName = `job-${job._id}`
-    fs.writeFile(path.resolve(__dirname, `../../dist/${fileName}.html`), generatedHtml, function (err) {
-        if (err) { console.log(err); return false }
-        console.log(`generated ${fileName} successfully`);
-        return true;
-    });
-}
-
-// need to add to every add / update
-// query jobs by itself? 
-async function generateJobList() {
-    const { jobs } = await query()
-
-    //make async
-    const template = ejs.compile(fs.readFileSync(path.resolve(__dirname, '../../views/jobList.ejs'), 'utf8'));
-    const generatedHtml = template({ jobs });
-
-    //make async
-    const fileName = `job-list`
-    fs.writeFile(path.resolve(__dirname, `../../dist/${fileName}.html`), generatedHtml, function (err) {
-        if (err) { console.log(err); return false }
-        console.log(`generated ${fileName} successfully`);
-        return true;
-    });
 }
 
 function getHeadOptions(job) {

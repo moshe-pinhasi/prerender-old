@@ -53,11 +53,11 @@ app.use('/api/jobs', jobsRoutes)
 
 app.get('/job/:id', (req, res) => {
     const {id} = req.params
-    res.sendFile(path.join(__dirname, 'dist', `job-${id}.html`));
+    res.sendFile(path.join(__dirname, 'views', `job-${id}.html`));
 })
 
 app.get('/job', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', `job-list.html`));
+    res.sendFile(path.join(__dirname, 'views', `job-list.html`));
 })
 
 app.use(express.static(path.resolve(__dirname, 'vue-build')));

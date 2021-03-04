@@ -1,6 +1,6 @@
 const jobsService = require('./jobs.service')
 const logger = require('../../services/logger.service')
-
+const templatesService = require('../../services/templates.service')
 
 module.exports = { addJob, getJobs, getJob, removeJob, updateJob, getHeadOptions, generateStaticSite }
 
@@ -25,7 +25,7 @@ async function generateStaticSite(req, res) {
         
 
         // for each job - generate an HTML file, use EJS, save to dist - currently sync
-        await Promise.all([jobsService.generateJobList(jobs), ...jobs.map(jobsService.generateJobPage)]);
+        await Promise.all([templatesService.generateJobList(jobs), ...jobs.map(job => templatesService.generateJobPage(job, jobs))]);
 
         res.status(200).send({status: 'done'})
     } catch (err) {
