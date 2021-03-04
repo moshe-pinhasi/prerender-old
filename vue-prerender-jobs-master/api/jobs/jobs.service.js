@@ -96,8 +96,9 @@ async function remove(Id) {
 
 async function generateJobPage(job) {
     //make async
+    const { jobs } = await query()
     const template = ejs.compile(fs.readFileSync(path.resolve(__dirname, '../../views/jobDetails.ejs'), 'utf8'));
-    const generatedHtml = template({ job });
+    const generatedHtml = template({ job, jobs });
     // console.log(generatedHtml);
 
     //make async

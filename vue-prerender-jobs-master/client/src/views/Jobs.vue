@@ -1,65 +1,39 @@
 <template>
   <div>
-    <h1>Jobs</h1>
-    <button @click="generate">Generate static</button>
+    <h1>filters</h1>
     <div>
-      <router-link class="add-link" to="/job/edit">Add new</router-link>
-      <span class="list-title">Jobs list</span>
-      <ul>
-        <li v-for="job in jobs" :key="job._id">
-          <job-preview :job="job" />
-        </li>
-      </ul>
-      <paginator :page="page" :totalPages="totalPages" @set-new-page="setPage" />
+      <select v-model="selected">
+        <!-- inline object literal -->
+        <option v-for="job in jobs" :value="job" :key="job._id">{{job.title}}</option>
+      </select>
+    </div>
+
+    <div>
+      <button @click="nav">Visit job </button>
     </div>
   </div>
 </template>
 
 <script>
-import { jobService } from '@/services/jobService';
-import JobPreview from '../components/JobPreview.vue';
-import Paginator from '../components/Paginator.vue';
 
 export default {
-  components: { JobPreview, Paginator },
   data() {
     return {
-      jobs: null,
-      filterBy: null,
-      page: 1,
-      totalPages: 0,
-      headOptions: null,
+      jobs: [],
+      selected: null
     };
   },
   created() {
-    this.getJobs();
-    this.getHeadOptions();
+    this.jobs = window.jobs
+    // console.log('this.$route.qeury.id', this.$route.qeury)
+    console.log('this.jobs', this.jobs)
+    this.selected = this.jobs[0]
   },
   methods: {
-    async getJobs() {
-      try {
-        const { jobs, total } = await jobService.getJobs(this.page, this.$route.query);
-        this.jobs = jobs;
-        this.totalPages = Math.ceil(total / 10);
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    setPage(pageNum) {
-      this.page = pageNum;
-      this.getJobs();
-    },
-    async getHeadOptions() {
-      this.headOptions = await jobService.getHeadOptions();
-      this.$emit('updateHead');
-    },
-    async generate() {
-      jobService.generateStaticSite();
-    },
-  },
-  head() {
-    return this.headOptions;
-  },
+    nav() {
+      this.$router.push('job/' + this.selected._id)
+    }
+  }
 };
 </script>
  

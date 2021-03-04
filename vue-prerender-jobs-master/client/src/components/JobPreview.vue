@@ -1,26 +1,15 @@
 <template>
-  <router-link :to="jobDetailsLink">
-    <div class="job-preview">
-      <div><h2>{{ job.title }}</h2></div>
-      <div><label>Location: </label>{{ job.location }}</div>
-      <div><label>Company: </label>{{ job.company }}</div>
-      <div><label>Type: </label>{{ job.job_type }}</div>
-      <router-link class="edit-link" :to="jobEditLink">Edit</router-link>
-    </div>
-  </router-link>
+  <div class="job-preview" @click="$emit('click', job)">
+    <div><h2>{{ job.title }}</h2></div>
+    <div><label>Location: </label>{{ job.location }}</div>
+    <div><label>Company: </label>{{ job.company }}</div>
+    <div><label>Type: </label>{{ job.type }}</div>
+  </div>
 </template>
 
 <script>
 export default {
   props: ["job"],
-  computed: {
-    jobDetailsLink() {
-      return `/job/${this.job._id}`;
-    },
-    jobEditLink() {
-      return `/job/edit/${this.job._id}`;
-    },
-  },
 };
 </script>
 

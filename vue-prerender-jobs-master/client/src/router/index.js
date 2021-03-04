@@ -1,26 +1,28 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Admin from '../views/Admin.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/admin',
+    name: 'Admin',
+    component: Admin
   },
   {
-    path: '/job',
+    path: '/jobs',
     name: 'Jobs',
     component: () => import('../views/Jobs.vue'),
   },
   {
     path: '/job/edit/:id?',
+    name: 'Edit',
     component: () => import('../views/JobEdit.vue'),
   },
   {
     path: '/job/:id',
+    name: 'Job-Desc',
     component: () => import('../views/JobDetails.vue'),
   }
 ]

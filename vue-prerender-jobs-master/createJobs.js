@@ -11,16 +11,59 @@ const job_types = ['full-time', 'part-time', 'freelance', 'project']
 const companies = ['Locard', 'Jokens', 'Trummy', 'Dataps', 'Bcards', 'Eztalk', 'nepaid',
              'yeswap', 'backzy', 'packzy', 'nvideo', 'Spoker', 'flebit', 'locket', 'accell', 'splier']
 
+
+
+const all_ctgs = ['Dev', 'QA', 'Cat-Lover']
+const all_kewords = ['agile', 'api', 'bug', 'Application', 'Backend', 'Browser', 'css', 'Deployment', 'Documentation', 'Domain', 'Frontend', 'Fill-stack']
+
 const random = (max) => Math.floor(Math.random() * max)
+
+const shuffle = (array) => {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 
 const jobs = []
 for (let i=0; i< 100; i++) {
-  const id = i + ""
   const title = job_titles[random(job_titles.length)]
   const location = locations[random(locations.length)]
-  const job_type = job_types[random(job_types.length)]
+  const type = job_types[random(job_types.length)]
   const company = companies[random(companies.length)]
-  jobs.push({id, title, location, job_type, company})
+
+  const kewords = []
+  const kewords_count = random(all_kewords.length)
+  const curr_keys = shuffle(all_kewords)
+  for (var j = 0; j < kewords_count; j++) {
+    kewords.push(curr_keys[j])
+  }
+
+
+  const ctgs = []
+  const ctgs_count = random(2) + 1
+  if (ctgs_count === 1) {
+    const idx = random(all_ctgs.length)
+    ctgs.push(all_ctgs[idx])
+  } else { // 2
+    const idx = random(2)
+    ctgs.push(all_ctgs[idx])
+    ctgs.push(all_ctgs[2])
+  }
+
+  jobs.push({title, location, type, company, kewords, ctgs})
 }
 
 try {

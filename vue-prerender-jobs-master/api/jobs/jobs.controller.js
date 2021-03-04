@@ -21,13 +21,13 @@ async function generateStaticSite(req, res) {
     try {
         const { jobs } = await jobsService.query()
         
-        // for each job - generate an HTML file, use EJS, save to dist - currently sync
-        jobs.forEach(jobsService.generateJobPage);
-
         // Generate HTML list file
-        jobsService.generateJobList(jobs)
+        
 
-        res.status(200).end()
+        // for each job - generate an HTML file, use EJS, save to dist - currently sync
+        await Promise.all([jobsService.generateJobList(jobs), ...jobs.map(jobsService.generateJobPage)]);
+
+        res.status(200).send({status: 'done'})
     } catch (err) {
         console.log(err)
         res.status(500).send('server error')

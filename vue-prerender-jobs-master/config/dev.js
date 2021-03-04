@@ -1,6 +1,5 @@
 
-    module.exports = {
-  "dbURL": "mongodb://localhost:27017",
-  "dbName": "prerender-jobs"
+module.exports = {
+  "dbURL": process.env.DATABASE_URL
 }
     

@@ -1,19 +1,50 @@
 <template>
   <div>
-      <router-link to="/">Next job</router-link>|
-      <router-link to="/">Previews job</router-link>
-    <!-- <router-view /> -->
+    <header v-if="dev">
+      <router-link to="/admin">Admin</router-link> | 
+      <router-link to="/jobs">Jobs page</router-link>
+    </header>
+    <router-view />
   </div>
 </template>
 
 <script>
+import config from "./services/config"
+
 export default {
   data() {
     return {
+      dev: config.isDev
     };
   },
   created() {
-    // console.log(document.querySelector('.job-list'));
+    if (!config.isDev) return
+
+    window.jobs = [ {
+      company: "Eztalk",
+      ctgs: ["QA", "Cat-Lover"],
+      kewords: ["css", "Application", "api", "bug", "Fill-stack", "Browser", "Backend", "Frontend", "Deployment"],
+      location: "Petah Tikva",
+      title: "Handyman",
+      type: "part-time",
+      _id: "6040b5b96f89fd0014be79d8"
+    }, {
+      company: "Eztalk",
+      ctgs: ["Cat-Lover"],
+      kewords: [],
+      location: "Tel Aviv",
+      title: "Writter",
+      type: "part-time",
+      _id: "6040b5b96f89fd0014be79d7"
+    }, {
+      company: "Eztalk",
+      ctgs: ["Dev", "Cat-Lover"],
+      kewords: ["bug", "Fill-stack", "Browser", "Backend", "Frontend", "Deployment"],
+      location: "Petah Tikva",
+      title: "Reader",
+      type: "part-time",
+      _id: "6040b5b96f89fd0014be79d6"
+    }]
   },
   mounted() {
 
